@@ -1,0 +1,43 @@
+<div class="card">
+
+  <div class="card-top">
+    <div>
+      <div class="server-name">{{ server.name }}</div>
+      <div class="server-ip">{{ server.ipAddress }}</div>
+    </div>
+    <span class="status-badge" [ngClass]="'status-' + server.status.toLowerCase()">
+      {{ statusLabel(server.status) }}
+    </span>
+  </div>
+
+  <div class="card-info">
+    <div class="info-item">
+      <span class="info-label">CPU</span>
+      <span class="info-value">{{ server.cpu }} vCPU</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">RAM</span>
+      <span class="info-value">{{ server.ram }} MB</span>
+    </div>
+  </div>
+
+  <div class="card-actions">
+    <button class="btn-action btn-start"
+      [disabled]="server.status === 'RUNNING' || server.status === 'STARTING' || server.status === 'MAINTENANCE' || server.status === 'ERROR'"
+      (click)="start.emit(server)">▶ Запуск</button>
+    <button class="btn-action btn-stop"
+      [disabled]="server.status === 'STOPPED' || server.status === 'MAINTENANCE' || server.status === 'ERROR'"
+      (click)="stop.emit(server)">■ Стоп</button>
+    <button class="btn-action btn-restart"
+      [disabled]="server.status === 'STOPPED' || server.status === 'MAINTENANCE' "
+      (click)="restart.emit(server)">↺ Рестарт</button>
+  </div>
+
+  <div class="card-actions">
+    <button class="btn-action btn-info"   (click)="metrics.emit(server)">📈 Метрики</button>
+    <button class="btn-action btn-info"   (click)="logs.emit(server)">📋 Логи</button>
+    <button class="btn-action btn-edit"   (click)="edit.emit(server)">✎ Изменить</button>
+    <button class="btn-action btn-delete" (click)="delete.emit(server)">✕ Удалить</button>
+  </div>
+
+</div>

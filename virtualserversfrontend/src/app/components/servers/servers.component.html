@@ -1,0 +1,157 @@
+<div class="page">
+
+  <nav class="navbar">
+    <span class="nav-brand">Virtual Servers Panel</span>
+    @if (currentUser) {
+      <div class="nav-right">
+        <span class="nav-username">{{ currentUser.username }}</span>
+        <span class="nav-role">{{ currentUser.role }}</span>
+        @if (isAdmin) {
+          <button class="btn-admin" (click)="goToAdmin()">Админ панель</button>
+        }
+        <button class="btn-logout" (click)="logout()">Выйти</button>
+      </div>
+    }
+  </nav>
+
+  <main class="main">
+
+    <div class="page-header">
+      <h1 class="page-title">Серверы</h1>
+      <button class="btn-create" (click)="openCreate()">+ Создать сервер</button>
+    </div>
+
+    @if (loading) {
+      <div class="state-msg">Загрузка...</div>
+    } @else if (servers.length === 0) {
+      <div class="state-msg">Серверов нет. Создайте первый.</div>
+    } @else {
+      <div class="cards-grid">
+        @for (s of servers; track s.id) {
+          <app-server-card
+            [server]="s"
+            (start)="onStart($event)"
+            (stop)="onStop($event)"
+            (restart)="onRestart($event)"
+            (edit)="onEdit($event)"
+            (delete)="onDelete($event)"
+            (metrics)="onMetrics($event)"
+            (logs)="onLogs($event)"
+          />
+        }
+      </div>
+    }
+
+  </main>
+</div>
+
+@if (activeModal !== 'none') {
+  <div class="overlay" (click)="closeModal()"></div>
+}
+
+@if (activeModal === 'create') {
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Новый сервер</span>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      @if (createError) {
+        <div class="alert-error">{{ createError }}</div>
+      }
+      <div class="field">
+        <label class="label">Имя</label>
+        <input class="input" type="text" [(ngModel)]="createName" placeholder="my-server"/>
+      </div>
+      <div class="field">
+        <label class="label">CPU (vCPU)</label>
+        <input class="input" type="number" [(ngModel)]="createCpu" min="1" max="32"/>
+      </div>
+      <div class="field">
+        <label class="label">RAM (MB)</label>
+        <input class="input" type="number" [(ngModel)]="createRam" min="128" step="128"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModal()">Отмена</button>
+      <button class="btn-primary" (click)="submitCreate()" [disabled]="createLoading">
+        {{ createLoading ? '...' : 'Создать' }}
+      </button>
+    </div>
+  </div>
+}
+
+@if (activeModal === 'edit') {
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Конфигурация — {{ selectedServer?.name }}</span>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      @if (editError) {
+        <div class="alert-error">{{ editError }}</div>
+      }
+      <div class="field">
+        <label class="label">CPU (vCPU)</label>
+        <input class="input" type="number" [(ngModel)]="editCpu" min="1" max="32"/>
+      </div>
+      <div class="field">
+        <label class="label">RAM (MB)</label>
+        <input class="input" type="number" [(ngModel)]="editRam" min="128" step="128"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModal()">Отмена</button>
+      <button class="btn-primary" (click)="submitEdit()" [disabled]="editLoading">
+        {{ editLoading ? '...' : 'Сохранить' }}
+      </button>
+    </div>
+  </div>
+}
+
+@if (activeModal === 'logs') {
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <span class="modal-title">Логи — {{ selectedServer?.name }}</span>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      @if (logsLoading) {
+        <div class="state-msg">Загрузка...</div>
+      } @else if (logs.length === 0) {
+        <div class="state-msg">Логов нет</div>
+      } @else {
+        <div class="logs-list">
+          @for (log of logs; track log.id) {
+            <div class="log-row" [ngClass]="logLevelClass(log.level)">
+              <span class="log-time">{{ log.createdAt | date:'HH:mm:ss' }}</span>
+              <span class="log-level">{{ log.level }}</span>
+              <span class="log-msg">{{ log.message }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
+
+@if (activeModal === 'metrics') {
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <span class="modal-title">Метрики — {{ selectedServer?.name }}</span>
+      <span class="modal-hint">обновление каждые 15 сек</span>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      @if (metricsLoading) {
+        <div class="state-msg">Загрузка...</div>
+      } @else if (metrics.length === 0) {
+        <div class="state-msg">Метрик нет</div>
+      } @else {
+        <div class="chart-wrap">
+          <canvas id="metricsChart"></canvas>
+        </div>
+      }
+    </div>
+  </div>
+}

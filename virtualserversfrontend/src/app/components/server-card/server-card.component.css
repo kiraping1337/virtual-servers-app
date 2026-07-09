@@ -1,0 +1,80 @@
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.server-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1d23;
+  margin-bottom: 4px;
+}
+
+.server-ip {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.status-badge {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 4px 10px;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.status-running    { background: #dcfce7; color: #16a34a; }
+.status-stopped    { background: #f3f4f6; color: #6b7280; }
+.status-starting   { background: #fef9c3; color: #ca8a04; }
+.status-error      { background: #fee2e2; color: #dc2626; }
+.status-maintenance{ background: #dbeafe; color: #2563eb; }
+
+.card-info { display: flex; gap: 32px; }
+
+.info-item { display: flex; flex-direction: column; gap: 3px; }
+
+.info-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #9ca3af;
+}
+
+.info-value { font-size: 15px; color: #1a1d23; font-weight: 500; }
+
+.card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn-action {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding: 7px 13px;
+  border: 1px solid;
+  cursor: pointer;
+  background: none;
+  transition: opacity 0.2s, background 0.2s;
+  letter-spacing: 0.03em;
+}
+
+.btn-action:disabled        { opacity: 0.3; cursor: not-allowed; }
+.btn-action:not(:disabled):hover { opacity: 0.75; }
+
+.btn-start   { color: #16a34a; border-color: #bbf7d0; background: #f0fdf4; }
+.btn-stop    { color: #dc2626; border-color: #fca5a5; background: #fef2f2; }
+.btn-restart { color: #ca8a04; border-color: #fde68a; background: #fefce8; }
+.btn-info    { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+.btn-edit    { color: #4b5563; border-color: #d1d5db; background: #f9fafb; }
+.btn-delete  { color: #dc2626; border-color: #fca5a5; background: #fef2f2; }
